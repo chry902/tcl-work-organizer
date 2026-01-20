@@ -1,0 +1,9 @@
+.grid_layout{
+   display: grid;
+  
+  grid-template-areas:
+    "avviso odc pdl ditta referente inizio fine"
+      "area impianto item inizio fine note";
+
+ grid-template-columns:repeat(6,1fr);
+}
