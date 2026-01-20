@@ -1,20 +1,15 @@
-// @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
+import node from "@astrojs/node";
+import react from "@astrojs/react";
+import clerk from "@clerk/astro";
+import tailwindcss from "@tailwindcss/vite";
 
-import tailwindcss from '@tailwindcss/vite';
-
-import react from '@astrojs/react';
-
-// https://astro.build/config
 export default defineConfig({
+  integrations: [clerk(), react()],
+  output: "server",
+  adapter: node({ mode: "standalone" }),
   vite: {
     plugins: [tailwindcss()],
-    resolve: {
-         alias: {
-           '@': '/src',
-         }
-       }
+    resolve: { alias: { "@": "/src" } }
   },
-
-  integrations: [react()],
 });
