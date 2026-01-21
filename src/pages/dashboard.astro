@@ -1,9 +1,14 @@
 ---
+import Layout from "@/layouts/Layout.astro";
+import WorksPanel from "@/components/reactComponent/works/WorksPanel.jsx";
 const auth = Astro.locals.auth();
 if (!auth?.userId) {
   return Astro.redirect("/sign-in");
 }
 ---
+<Layout>
+  <h1>Dashboard</h1>
+  <p>Se vedi questa pagina, sei loggato ✅</p>
 
-<h1>Dashboard</h1>
-<p>Se vedi questa pagina, sei loggato ✅</p>
+  <WorksPanel client:load/>
+</Layout>

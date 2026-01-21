@@ -6,29 +6,31 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
-  SignInButton,
-} from "@clerk/astro/react"
+  SignInButton
+} from "@clerk/astro/components";
 ---
 
 <Layout>
-	<div class="w-dvw flex flex-col">
+	<div class="w-dvw p-6 flex flex-col gap-4 items-center justify-center">
 		<h1 class="text-xl">
-		Hello isab 2025@
+		Welcome to TCL Work Organizer
 	</h1>
 	<!-- <WorksTable/> -->
 	
-	 <div class="p-6 flex flex-col gap-4">
+	 <div class="flex flex-col gap-4 items-center justify-center">
+    <a href="/registrati" class="bg-green-500 text-white px-4 py-2 rounded">Registrati</a>
+     <SignedOut >
+       <SignInButton  mode='modal'  class="bg-blue-500 text-white px-4 py-2 rounded">Inizia sessione </SignInButton>
+     </SignedOut>
 
-    <SignedIn client:load>
-      <UserButton client:load />
+    <SignedIn >
+      <UserButton showName/>
       <p>Sei loggato ✅</p>
     </SignedIn>
 
-    <SignedOut client:load>
-      <SignInButton client:load mode="modal" />
-    </SignedOut>
 
   </div>
+  <a href="/dashboard">Go to Dashboard  </a>
 	</div>
 	</div>
 </Layout>
