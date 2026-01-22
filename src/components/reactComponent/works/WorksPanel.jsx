@@ -246,24 +246,32 @@ export default function WorksPanel() {
                 <strong>Codici</strong>
                 <div className={styles.grid4}>
                   <input
+                  name="avviso"
+                    id="avviso"
                     className={styles.input}
                     placeholder="Avviso"
                     value={form.codes.avviso}
                     onChange={(e) => setNested("codes.avviso", e.target.value)}
                   />
                   <input
+                    name="oda"
+                    id="oda"
                     className={styles.input}
                     placeholder="ODA"
                     value={form.codes.oda}
                     onChange={(e) => setNested("codes.oda", e.target.value)}
                   />
                   <input
+                    name="odc"
+                    id="odc"
                     className={styles.input}
                     placeholder="ODC"
                     value={form.codes.odc}
                     onChange={(e) => setNested("codes.odc", e.target.value)}
                   />
                   <input
+                    name="pdl"
+                    id="pdl"
                     className={styles.input}
                     placeholder="PDL"
                     value={form.codes.pdl}
@@ -276,18 +284,24 @@ export default function WorksPanel() {
                 <strong>Contesto</strong>
                 <div className={styles.grid4}>
                   <input
+                    name="ditta"
+                    id="ditta"
                     className={styles.input}
                     placeholder="Ditta"
                     value={form.context.ditta}
                     onChange={(e) => setNested("context.ditta", e.target.value)}
                   />
                   <input
+                    name="area"
+                    id="area"
                     className={styles.input}
                     placeholder="Area"
                     value={form.context.area}
                     onChange={(e) => setNested("context.area", e.target.value)}
                   />
                   <input
+                    name="impianto"
+                    id="impianto"
                     className={styles.input}
                     placeholder="Impianto"
                     value={form.context.impianto}
@@ -296,6 +310,8 @@ export default function WorksPanel() {
                     }
                   />
                   <input
+                    name="item"
+                    id="item"
                     className={styles.input}
                     placeholder="Item"
                     value={form.context.item}
@@ -336,6 +352,8 @@ export default function WorksPanel() {
                   <label className={styles.row}>
                     <span style={{ fontSize: 12, opacity: 0.75 }}>Inizio</span>
                     <input
+                      name="date-start"
+                      id="date-start"
                       className={styles.input}
                       type="date"
                       value={form.dates.start}
@@ -346,6 +364,8 @@ export default function WorksPanel() {
                   <label className={styles.row}>
                     <span style={{ fontSize: 12, opacity: 0.75 }}>Fine</span>
                     <input
+                      name="date-end"
+                      id="date-end"
                       className={styles.input}
                       type="date"
                       value={form.dates.end}

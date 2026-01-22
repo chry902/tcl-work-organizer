@@ -11,11 +11,15 @@
   width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.10);
   background-color: rgb(255, 255, 255); /* grigio chiarissimo */
-  border-radius: 12px;
-  padding: 10px 12px;
+  border-radius: 8px;
+  padding: 10px ;
   font-size: 14px;
   outline: none;
   transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+#date-start,
+#date-end {
+  width: auto;
 }
 
 .textarea {
