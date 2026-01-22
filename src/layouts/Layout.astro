@@ -1,5 +1,11 @@
 ---
 import '../styles/global.css'
+import {
+  SignedIn,
+  SignedOut,
+  UserButton,
+  SignInButton
+} from "@clerk/astro/components";
 ---
 <!doctype html>
 <html lang="en">
@@ -11,12 +17,35 @@ import '../styles/global.css'
 		<title>TCL Work Organizer</title>
 	</head>
 	<body>
+		<div class="w-dvw p-6 flex flex-col gap-4 items-center justify-center">
+		<h1 class="text-xl">
+		Welcome to TCL Work Organizer
+	</h1>
+		 <div class="flex  gap-4 items-center justify-center">
+    <a href="/registrati" class="bg-green-500 text-white px-4 py-2 rounded">Registrati</a>
+     <SignedOut >
+       <SignInButton  mode='modal'  class="bg-blue-500 text-white px-4 py-2 rounded">Inizia sessione </SignInButton>
+     </SignedOut>
+
+    <SignedIn >
+      <UserButton showName/>
+    </SignedIn>
+
+
+  </div>
+		</div>
+	
 		<slot />
 	</body>
 </html>
 
-<style>
+<style is:global>
 	html,
+	*{
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
 	body {
 		margin: 0;
 		width: 100%;

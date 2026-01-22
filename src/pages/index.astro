@@ -2,34 +2,15 @@
 import Layout from '../layouts/Layout.astro';
 // import WorksTable from '../components/WorksTable.astro';
 
-import {
-  SignedIn,
-  SignedOut,
-  UserButton,
-  SignInButton
-} from "@clerk/astro/components";
+
 ---
 
 <Layout>
 	<div class="w-dvw p-6 flex flex-col gap-4 items-center justify-center">
-		<h1 class="text-xl">
-		Welcome to TCL Work Organizer
-	</h1>
+	
 	<!-- <WorksTable/> -->
 	
-	 <div class="flex flex-col gap-4 items-center justify-center">
-    <a href="/registrati" class="bg-green-500 text-white px-4 py-2 rounded">Registrati</a>
-     <SignedOut >
-       <SignInButton  mode='modal'  class="bg-blue-500 text-white px-4 py-2 rounded">Inizia sessione </SignInButton>
-     </SignedOut>
-
-    <SignedIn >
-      <UserButton showName/>
-      <p>Sei loggato ✅</p>
-    </SignedIn>
-
-
-  </div>
+	
   <a href="/dashboard">Go to Dashboard  </a>
 	</div>
 	</div>

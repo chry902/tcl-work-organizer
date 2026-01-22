@@ -51,6 +51,18 @@ export async function patchWorkStatus(id, status) {
   return out.data.data;
 }
 
+export async function patchWorkNotes(id, notes) {
+  const res = await fetch(`/api/works/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ notes }),
+  });
+
+  const out = await parseJson(res);
+  if (!out.ok) throw new Error(out.data?.error || "Errore PATCH notes");
+  return out.data.data;
+}
+
 export async function deleteWork(id) {
   const res = await fetch(`/api/works/${id}`, { method: "DELETE" });
   const out = await parseJson(res);

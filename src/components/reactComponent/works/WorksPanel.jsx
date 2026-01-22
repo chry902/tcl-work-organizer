@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { patchWorkNotes } from "@/services/works.services.js";
 import { WorkStatus } from "@/models/work.model.js";
 import {
   getWorks,
@@ -29,6 +30,16 @@ function pillText(status) {
   return "EVASO";
 }
 
+const STATUS_ORDER = {
+  [WorkStatus.OPEN]: 0,
+  [WorkStatus.SUSPENDED]: 1,
+  [WorkStatus.CLOSED]: 2, // EVASO
+};
+
+function statusRank(status) {
+  return STATUS_ORDER[status] ?? 99;
+}
+
 function normalize(str) {
   return String(str || "").trim().toLowerCase();
 }
@@ -53,6 +64,14 @@ function workMatchesQuery(work, q) {
   return haystack.includes(query);
 }
 
+function formatDateIT(iso) {
+  if (!iso) return "";
+  const [y, m, d] = String(iso).split("-");
+  if (!y || !m || !d) return iso;
+  return `${d}/${m}/${y}`;
+}
+
+
 export default function WorksPanel() {
   const [works, setWorks] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -65,6 +84,11 @@ export default function WorksPanel() {
 
   // Form collapsible
   const [isFormOpen, setIsFormOpen] = useState(false); // di default CHIUSO
+
+
+  const [editingNotesId, setEditingNotesId] = useState(null);
+  const [notesDraft, setNotesDraft] = useState("");
+
 
   async function refresh() {
     setLoading(true);
@@ -143,9 +167,50 @@ export default function WorksPanel() {
     }
   }
 
+  function startEditNotes(work) {
+    setEditingNotesId(work.id);
+    setNotesDraft(work.notes || "");
+  }
+
+  function cancelEditNotes() {
+    setEditingNotesId(null);
+    setNotesDraft("");
+  }
+
+  async function saveNotes(work) {
+    setMsg("");
+    setBusyId(work.id);
+
+    try {
+      const updated = await patchWorkNotes(work.id, notesDraft);
+      setWorks((prev) => prev.map((w) => (w.id === work.id ? updated : w)));
+
+      setMsg("✅ Note aggiornate");
+      setEditingNotesId(null);
+      setNotesDraft("");
+    } catch (e) {
+      setMsg(e?.message || "Errore aggiornamento note");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+
   const filteredWorks = useMemo(() => {
-    return works.filter((w) => workMatchesQuery(w, query));
+    return works
+      .filter((w) => workMatchesQuery(w, query))
+      .sort((a, b) => {
+        // 1) stato: aperto -> sospeso -> evaso
+        const s = statusRank(a.status) - statusRank(b.status);
+        if (s !== 0) return s;
+
+        // 2) a parità di stato: più recenti sopra (updatedAt)
+        const ta = a?.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+        const tb = b?.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+        return tb - ta;
+      });
   }, [works, query]);
+
 
   return (
     <div className={styles.panel}>
@@ -372,36 +437,120 @@ export default function WorksPanel() {
                 key={w.id}
                 className={`${styles.card} ${cardClassByStatus(w.status)}`}
               >
-                <div className={styles.header}>
-                  <div className={styles.titleBlock}>
-                    <h3 className={styles.title}>
-                      {w.codes?.avviso
-                        ? `Avviso: ${w.codes.avviso}`
-                        : `Work: ${w.id}`}
-                    </h3>
+                {/* TOP */}
+                <div className={styles.cardTop}>
+                  <div className={styles.topRight}>
+                    <div className={styles.dates}>
+                      <span>
+                        <span className={styles.dateLabel}>Inizio</span>{" "}
+                        <strong>{w?.dates?.start ? formatDateIT(w.dates.start) : "-"}</strong>
+                      </span>
+                      <span>
+                        <span className={styles.dateLabel}>Fine</span>{" "}
+                        <strong>{w?.dates?.end ? formatDateIT(w.dates.end) : "-"}</strong>
+                      </span>
+                    </div>
 
-                    <p className={styles.meta}>
-                      {w.context?.ditta ? `${w.context.ditta}` : ""}
-                      {w.context?.area ? ` • ${w.context.area}` : ""}
-                      {w.context?.impianto ? ` • ${w.context.impianto}` : ""}
-                      {w.context?.item ? ` • ${w.context.item}` : ""}
-                    </p>
+                    <span className={styles.pill}>{pillText(w.status)}</span>
                   </div>
 
-                  <span className={styles.pill}>{pillText(w.status)}</span>
+
+                  <div className={styles.topLeft}>
+                    <div className={styles.chipsRow}>
+                      <span className={styles.chip}>
+                        Avviso: <strong>{w.codes?.avviso || "-"}</strong>
+                      </span>
+                      <span className={styles.chip}>
+                        ODA: <strong>{w.codes?.oda || "-"}</strong>
+                      </span>
+                      <span className={styles.chip}>
+                        ODC: <strong>{w.codes?.odc || "-"}</strong>
+                      </span>
+                      <span className={styles.chip}>
+                        PDL: <strong>{w.codes?.pdl || "-"}</strong>
+                      </span>
+                    </div>
+
+                    <div className={styles.chipsRow}>
+                      <span className={`${styles.chip} ${styles.chipSoft}`}>
+                        Ditta: <strong>{w.context?.ditta || "-"}</strong>
+                      </span>
+                      <span className={`${styles.chip} ${styles.chipSoft}`}>
+                        Area: <strong>{w.context?.area || "-"}</strong>
+                      </span>
+                      <span className={`${styles.chip} ${styles.chipSoft}`}>
+                        Impianto: <strong>{w.context?.impianto || "-"}</strong>
+                      </span>
+                      <span className={`${styles.chip} ${styles.chipSoft}`}>
+                        Item: <strong>{w.context?.item || "-"}</strong>
+                      </span>
+                    </div>
+                  </div>
+
                 </div>
 
-                <div className={styles.body}>
-                  {w.description ? (
-                    <p className={styles.description}>{w.description}</p>
-                  ) : null}
+                {/* TEXT */}
+                <div className={styles.textBlock}>
+                  <div className={styles.textSection}>
+                    <div className={styles.textLabel}>Descrizione</div>
+                    <div className={styles.textValue}>{w.description || "-"}</div>
+                  </div>
 
-                  {w.notes ? <p className={styles.notes}>{w.notes}</p> : null}
+                  <div className={styles.textSection}>
+  <div className={styles.textLabelRow}>
+    <div className={styles.textLabel}>Note</div>
+
+    {editingNotesId === w.id ? (
+      <div className={styles.noteActions}>
+        <button
+          type="button"
+          className={`${styles.btn} ${styles.btnGhost}`}
+          onClick={() => saveNotes(w)}
+          disabled={busyId === w.id}
+        >
+          Salva
+        </button>
+
+        <button
+          type="button"
+          className={`${styles.btn} ${styles.btnGhost}`}
+          onClick={cancelEditNotes}
+          disabled={busyId === w.id}
+        >
+          Annulla
+        </button>
+      </div>
+    ) : (
+      <button
+        type="button"
+        className={`${styles.btn} ${styles.btnGhost}`}
+        onClick={() => startEditNotes(w)}
+      >
+        Modifica
+      </button>
+    )}
+  </div>
+
+  {editingNotesId === w.id ? (
+    <textarea
+      className={styles.textarea}
+      value={notesDraft}
+      onChange={(e) => setNotesDraft(e.target.value)}
+      rows={3}
+      placeholder="Scrivi note..."
+      disabled={busyId === w.id}
+    />
+  ) : (
+    <div className={styles.textValue}>{w.notes || "-"}</div>
+  )}
+</div>
+
                 </div>
 
-                <div className={styles.controls}>
-                  <div className={styles.statusRow}>
-                    <div className={styles.statusLabel}>Stato</div>
+                {/* BOTTOM */}
+                <div className={styles.cardBottom}>
+                  <div className={styles.statusArea}>
+                    <div className={styles.statusTitle}>Stato</div>
 
                     <div className={styles.checks}>
                       {Object.values(WorkStatus).map((s) => (
@@ -418,8 +567,8 @@ export default function WorksPanel() {
                     </div>
                   </div>
 
-                  <div className={styles.footer}>
-                    <div className={styles.small}>
+                  <div className={styles.bottomRight}>
+                    <div className={styles.updatedAt}>
                       Aggiornato: {new Date(w.updatedAt).toLocaleString()}
                     </div>
 
@@ -435,6 +584,7 @@ export default function WorksPanel() {
                 </div>
               </div>
             ))}
+
           </div>
         )}
       </div>

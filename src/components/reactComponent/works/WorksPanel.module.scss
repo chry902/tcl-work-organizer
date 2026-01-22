@@ -169,7 +169,7 @@
   flex: 1 1 220px;
 }
 
-/* ---------- Cards ---------- */
+/* ---------- Cards ----------------- */
 .cards {
   display: grid;
   gap: 12px;
@@ -180,7 +180,7 @@
   border-radius: 14px;
   padding: 12px;
   display: grid;
-  gap: 10px;
+  gap: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
@@ -203,107 +203,171 @@
   background: #fdecea; /* rosso chiarissimo */
 }
 
-.header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
+/* top layout */
+.cardTop {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+
 }
 
-.titleBlock {
+.topLeft {
   display: grid;
-  gap: 4px;
+  gap: 8px;
   min-width: 0;
 }
 
-.title {
-  font-weight: 800;
-  font-size: 15px;
-  line-height: 1.2;
-  margin: 0;
-  word-break: break-word;
+.topRight {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
 }
 
-.meta {
-  font-size: 13px;
-  opacity: 0.82;
-  line-height: 1.2;
-  margin: 0;
-  word-break: break-word;
+/* chips */
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 10px;
+  
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.70);
+  white-space: nowrap;
+}
+
+.chip strong {
+  font-weight: 900;
+}
+
+.chipSoft {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.45);
+  
+}
+
+.dates {
+  display: grid;
+  gap: 4px;
+  text-align: right;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.dateLabel {
+  opacity: 0.75;
+ 
 }
 
 .pill {
   flex: 0 0 auto;
-  font-size: 12px;
-  font-weight: 800;
-  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;      /* verticale */
+  justify-content: center;  /* orizzontale */
+  font-size: 11px;
+  font-weight: 900;
+  padding: 0 10px;
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.75);
 }
 
-.body {
+/* text blocks */
+.textBlock {
   display: grid;
-  gap: 8px;
+  gap: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 10px;
 }
 
-.description {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.35;
-}
-
-.notes {
-  margin: 0;
-  font-size: 13px;
-  opacity: 0.85;
-  line-height: 1.35;
-}
-
-.controls {
+.textSection {
   display: grid;
+  // gap: 1px;
+}
+
+.textLabel {
+  font-size: 12px;
+  font-weight: 900;
+ 
+}
+
+.textLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
-.statusRow {
+.noteActions {
+  display: flex;
+  gap: 8px;
+}
+
+
+.textValue {
+  font-size: 14px;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-word;
+  
+}
+
+/* bottom */
+.cardBottom {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.statusArea {
   display: grid;
   gap: 8px;
 }
 
-.statusLabel {
+.statusTitle {
   font-size: 12px;
-  font-weight: 800;
-  opacity: 0.8;
+  font-weight: 900;
+  opacity: 0.72;
 }
 
 .checks {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px 14px;
+  gap: 10px 12px;
 }
 
 .check {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 13px;
   padding: 6px 8px;
   border-radius: 12px;
   border: 1px solid rgba(0,0,0,0.08);
   background: rgba(255,255,255,0.55);
 }
 
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
+.bottomRight {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
 }
 
-.small {
+.updatedAt {
   font-size: 12px;
-  opacity: 0.75;
+  opacity: 0.65;
+  text-align: right;
 }
 
 /* Mobile ultra-small */
@@ -312,10 +376,19 @@
     padding: 10px;
     border-radius: 12px;
   }
-  .title {
-    font-size: 14px;
+
+  .cardTop {
+    grid-template-columns: 1fr;
   }
-  .check {
-    font-size: 13px;
+
+  .topRight {
+    justify-items: start;
+  }
+
+  .dates {
+    text-align: left;
+  }
+  .cardBottom {
+    grid-template-columns: 1fr;
   }
 }
