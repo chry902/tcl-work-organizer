@@ -4,9 +4,11 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
-  SignInButton
+  SignInButton,
+  SignUpButton
 } from "@clerk/astro/components";
 ---
+
 
 <!doctype html>
 <html lang="en">
@@ -21,26 +23,34 @@ import {
   <body class="min-h-screen flex flex-col">
     
     <!-- HEADER -->
-    <header class="w-full p-4 flex justify-between items-center border-b">
-      <h1 class="text-lg font-semibold">
-        TCL Work Organizer
-      </h1>
+   <header class="w-full p-4 flex justify-between items-center border-b">
+  <h1 class="text-lg font-semibold">
+    TCL Work Organizer
+  </h1>
 
-      <div class="flex gap-4 items-center">
-        <SignedOut>
-          <SignInButton
-            mode="modal"
-            class="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Inizia sessione
-          </SignInButton>
-        </SignedOut>
+  <div class="flex gap-3 items-center">
+    <SignedOut>
+      <SignInButton
+        mode="modal"
+        class="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Accedi
+      </SignInButton>
 
-        <SignedIn>
-          <UserButton showName />
-        </SignedIn>
-      </div>
-    </header>
+      <SignUpButton
+        mode="modal"
+        class="border border-blue-500 text-blue-500 px-4 py-2 rounded"
+      >
+        Registrati
+      </SignUpButton>
+    </SignedOut>
+
+    <SignedIn>
+      <UserButton showName />
+    </SignedIn>
+  </div>
+</header>
+
 
     <!-- PAGE CONTENT -->
     <main class="flex-1">
