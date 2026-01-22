@@ -13,6 +13,7 @@
     "@astrojs/react": "^4.4.2",
     "@astrojs/vercel": "^9.0.4",
     "@clerk/astro": "^2.16.13",
+    "@clerk/localizations": "^3.35.1",
     "@tailwindcss/vite": "^4.1.17",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
