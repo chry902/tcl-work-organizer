@@ -441,11 +441,11 @@ export default function WorksPanel() {
                 <div className={styles.cardTop}>
                   <div className={styles.topRight}>
                     <div className={styles.dates}>
-                      <span>
+                      <span className={styles.dateItem}>
                         <span className={styles.dateLabel}>Inizio</span>{" "}
                         <strong>{w?.dates?.start ? formatDateIT(w.dates.start) : "-"}</strong>
                       </span>
-                      <span>
+                      <span className={styles.dateItem}>
                         <span className={styles.dateLabel}>Fine</span>{" "}
                         <strong>{w?.dates?.end ? formatDateIT(w.dates.end) : "-"}</strong>
                       </span>
@@ -497,60 +497,62 @@ export default function WorksPanel() {
                   </div>
 
                   <div className={styles.textSection}>
-  <div className={styles.textLabelRow}>
-    <div className={styles.textLabel}>Note</div>
 
-    {editingNotesId === w.id ? (
-      <div className={styles.noteActions}>
-        <button
-          type="button"
-          className={`${styles.btn} ${styles.btnGhost}`}
-          onClick={() => saveNotes(w)}
-          disabled={busyId === w.id}
-        >
-          Salva
-        </button>
+                    <div className={styles.textLabelRow}>
+                    <div className={styles.textLabel}>Note</div>
+                      {/* -------------- */}
+                      {editingNotesId === w.id ? (
+                        <div className={styles.noteActions}>
+                          <button
+                            type="button"
+                            className={`${styles.btn} ${styles.btnGhost}`}
+                            onClick={() => saveNotes(w)}
+                            disabled={busyId === w.id}
+                          >
+                            Salva
+                          </button>
 
-        <button
-          type="button"
-          className={`${styles.btn} ${styles.btnGhost}`}
-          onClick={cancelEditNotes}
-          disabled={busyId === w.id}
-        >
-          Annulla
-        </button>
-      </div>
-    ) : (
-      <button
-        type="button"
-        className={`${styles.btn} ${styles.btnGhost}`}
-        onClick={() => startEditNotes(w)}
-      >
-        Modifica
-      </button>
-    )}
-  </div>
+                          <button
+                            type="button"
+                            className={`${styles.btn} ${styles.btnGhost}`}
+                            onClick={cancelEditNotes}
+                            disabled={busyId === w.id}
+                          >
+                            Annulla
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          className={`${styles.btn} ${styles.btnGhost}`}
+                          onClick={() => startEditNotes(w)}
+                        >
+                          Modifica
+                        </button>
+                      )}
+                    </div>
+                      {editingNotesId === w.id ? (
+                        <textarea
+                          className={styles.textarea}
+                          value={notesDraft}
+                          onChange={(e) => setNotesDraft(e.target.value)}
+                          rows={3}
+                          placeholder="Scrivi note..."
+                          disabled={busyId === w.id}
+                        />
+                      ) : (
+                        <div className={styles.textValue}>{w.notes || "-"}</div>
+                      )}
 
-  {editingNotesId === w.id ? (
-    <textarea
-      className={styles.textarea}
-      value={notesDraft}
-      onChange={(e) => setNotesDraft(e.target.value)}
-      rows={3}
-      placeholder="Scrivi note..."
-      disabled={busyId === w.id}
-    />
-  ) : (
-    <div className={styles.textValue}>{w.notes || "-"}</div>
-  )}
-</div>
+
+                  </div>
 
                 </div>
 
                 {/* BOTTOM */}
                 <div className={styles.cardBottom}>
-                  <div className={styles.statusArea}>
-                    <div className={styles.statusTitle}>Stato</div>
+                  
+                    {/* <div className={styles.statusTitle}>Stato</div> */}
 
                     <div className={styles.checks}>
                       {Object.values(WorkStatus).map((s) => (
@@ -564,15 +566,11 @@ export default function WorksPanel() {
                           <span>{s}</span>
                         </label>
                       ))}
-                    </div>
+
+
+                    
                   </div>
-
-                  <div className={styles.bottomRight}>
-                    <div className={styles.updatedAt}>
-                      Aggiornato: {new Date(w.updatedAt).toLocaleString()}
-                    </div>
-
-                    <button
+                      <button
                       type="button"
                       className={`${styles.btn} ${styles.btnDanger}`}
                       onClick={() => onDelete(w.id)}
@@ -580,7 +578,13 @@ export default function WorksPanel() {
                     >
                       {busyId === w.id ? "..." : "Elimina"}
                     </button>
-                  </div>
+
+                  {/* <div className={styles.bottomRight}>
+                   
+
+                    
+                     
+                  </div> */}
                 </div>
               </div>
             ))}
