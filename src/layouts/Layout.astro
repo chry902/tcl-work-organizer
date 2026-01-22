@@ -7,50 +7,45 @@ import {
   SignInButton
 } from "@clerk/astro/components";
 ---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>TCL Work Organizer</title>
-	</head>
-	<body>
-		<div class="w-dvw p-6 flex flex-col gap-4 items-center justify-center">
-		<h1 class="text-xl">
-		Welcome to TCL Work Organizer
-	</h1>
-		 <div class="flex  gap-4 items-center justify-center">
-    <a href="/registrati" class="bg-green-500 text-white px-4 py-2 rounded">Registrati</a>
-     <SignedOut >
-       <SignInButton  mode='modal'  class="bg-blue-500 text-white px-4 py-2 rounded">Inizia sessione </SignInButton>
-     </SignedOut>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>TCL Work Organizer</title>
+  </head>
 
-    <SignedIn >
-      <UserButton showName/>
-    </SignedIn>
+  <body class="min-h-screen flex flex-col">
+    
+    <!-- HEADER -->
+    <header class="w-full p-4 flex justify-between items-center border-b">
+      <h1 class="text-lg font-semibold">
+        TCL Work Organizer
+      </h1>
 
+      <div class="flex gap-4 items-center">
+        <SignedOut>
+          <SignInButton
+            mode="modal"
+            class="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Inizia sessione
+          </SignInButton>
+        </SignedOut>
 
-  </div>
-		</div>
-	
-		<slot />
-	</body>
+        <SignedIn>
+          <UserButton showName />
+        </SignedIn>
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <main class="flex-1">
+      <slot />
+    </main>
+
+  </body>
 </html>
-
-<style is:global>
-	html,
-	*{
-		box-sizing: border-box;
-		margin: 0;
-		padding: 0;
-	}
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-		/* color: white;
-		background-color: rgb(6, 1, 31); */
-	}
-</style>
