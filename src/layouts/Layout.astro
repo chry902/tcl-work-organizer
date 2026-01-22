@@ -1,14 +1,13 @@
 ---
-import '../styles/global.css'
+import "../styles/global.css";
 import {
   SignedIn,
   SignedOut,
   UserButton,
   SignInButton,
-  SignUpButton
+  SignUpButton,
 } from "@clerk/astro/components";
 ---
-
 
 <!doctype html>
 <html lang="en">
@@ -21,47 +20,44 @@ import {
   </head>
 
   <body class="min-h-screen flex flex-col">
-    
     <!-- HEADER -->
-   <header class="w-full p-4 flex justify-between items-center border-b">
-  <h1 class="text-lg font-semibold">
-    TCL Work Organizer
-  </h1>
+    <header class="w-full p-4 flex justify-between items-center border-b">
+      <h1 class="text-lg font-semibold">TCL Work Organizer</h1>
 
-  <div class="flex gap-3 items-center">
-    <SignedOut>
-      <SignInButton
-        mode="modal"
-        class="bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        Accedi
-      </SignInButton>
+      <div class="flex gap-3 items-center">
+        <SignedOut>
+          <SignInButton
+            mode="modal"
+            class="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Accedi
+          </SignInButton>
 
-      <SignUpButton
-        mode="modal"
-        class="border border-blue-500 text-blue-500 px-4 py-2 rounded"
-      >
-        Registrati
-      </SignUpButton>
-    </SignedOut>
+          <SignUpButton
+            mode="modal"
+            class="border border-blue-500 text-blue-500 px-4 py-2 rounded"
+          >
+            Registrati
+          </SignUpButton>
+        </SignedOut>
 
-    <SignedIn>
-      <UserButton showName />
-    </SignedIn>
-  </div>
-</header>
-
+        <SignedIn>
+          <UserButton showName />
+        </SignedIn>
+      </div>
+    </header>
 
     <!-- PAGE CONTENT -->
     <main class="flex-1">
       <slot />
     </main>
-<footer class="w-full p-4 bg-gray-100 border-t mt-6">
-  <div class="text-center">
-    <p class="text-sm text-gray-600">
-      &copy; {new Date().getFullYear()} TCL Work Organizer. Tutti i diritti riservati. madew with &#10084; by Chri.
-    </p>
-  </div>
-</footer>
+    <footer class="w-full p-4 bg-gray-100 border-t mt-6">
+      <div class="text-center">
+        <p class="text-sm text-gray-600">
+          &copy; {new Date().getFullYear()} TCL Work Organizer. Tutti i diritti riservati.
+          madew with &#10084; by Chri.
+        </p>
+      </div>
+    </footer>
   </body>
 </html>
