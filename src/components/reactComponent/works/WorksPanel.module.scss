@@ -167,15 +167,48 @@
   background-color: rgba(209, 246, 255, 0.6);
 }
 
-.searchRow {
-  display: flex;
+.header {
+  display: grid;
   gap: 8px;
+}
+
+.title {
+  margin: 0;
+}
+
+.msg {
+  margin: 0;
+}
+
+.dateLabel {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
-.searchRow .input {
-  flex: 1 1 220px;
+.resultsText {
+  font-size: 12px;
+  opacity: 0.7;
 }
+
+.list {
+  display: grid;
+  gap: 10px;
+}
+
+.listHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 
 /* ---------- Cards list ---------- */
 .cards {

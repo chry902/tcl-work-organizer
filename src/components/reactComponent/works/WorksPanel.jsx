@@ -1,6 +1,8 @@
-import WorkCard from "./components/WorkCard/WorkCard";
-
 import React, { useEffect, useMemo, useState } from "react";
+
+import WorkCard from "./components/WorkCard/WorkCard";
+import WorkSearchBox from "./components/WorkSearchBox/WorkSearchBox";
+
 import { patchWorkNotes } from "@/services/works.services.js";
 import { WorkStatus } from "@/models/work.model.js";
 import {
@@ -32,8 +34,6 @@ const STATUS_ORDER = {
   [WorkStatus.PROGRAMMED]: 2,
   [WorkStatus.CLOSED]: 3,
 };
-
-
 
 function statusRank(status) {
   return STATUS_ORDER[status] ?? 99;
@@ -91,11 +91,10 @@ export default function WorksPanel() {
   // Search
   const [query, setQuery] = useState("");
   useEffect(() => {
-  if (query.trim().length > 0) {
-    setStatusFilter("ALL");
-  }
-}, [query]);
-
+    if (query.trim().length > 0) {
+      setStatusFilter("ALL");
+    }
+  }, [query]);
 
   // Form collapsible
   const [isFormOpen, setIsFormOpen] = useState(false); // di default CHIUSO
@@ -212,7 +211,7 @@ export default function WorksPanel() {
     return works
       .filter((w) => workMatchesQuery(w, query))
       .sort((a, b) => {
-        // 1) stato: aperto -> sospeso -> evaso
+        // 1) stato: aperto -> sospeso -> programmed -> evaso
         const s = statusRank(a.status) - statusRank(b.status);
         if (s !== 0) return s;
 
@@ -225,9 +224,6 @@ export default function WorksPanel() {
 
   const hasQuery = query.trim().length > 0;
 
-  // ✅ SE stai cercando → ignora filtro stato
-  // ✅ SE NON stai cercando → applica filtro stato
-
   const finalWorks = hasQuery
     ? filteredWorks
     : statusFilter === "ALL"
@@ -237,9 +233,9 @@ export default function WorksPanel() {
   return (
     <div className={styles.panel}>
       {/* HEADER */}
-      <div style={{ display: "grid", gap: 8 }}>
-        <h2 style={{ margin: 0 }}>Works</h2>
-        {msg ? <p style={{ margin: 0 }}>{msg}</p> : null}
+      <div className={styles.header}>
+        <h2 className={styles.title}>Works</h2>
+        {msg ? <p className={styles.msg}>{msg}</p> : null}
       </div>
 
       {/* FORM COLLASSABILE */}
@@ -327,9 +323,7 @@ export default function WorksPanel() {
                     className={styles.input}
                     placeholder="Impianto"
                     value={form.context.impianto}
-                    onChange={(e) =>
-                      setNested("context.impianto", e.target.value)
-                    }
+                    onChange={(e) => setNested("context.impianto", e.target.value)}
                   />
                   <input
                     name="item"
@@ -372,7 +366,7 @@ export default function WorksPanel() {
                 <strong>Date (facoltative)</strong>
                 <div className={styles.grid2}>
                   <label className={styles.row}>
-                    <span style={{ fontSize: 12, opacity: 0.75 }}>Inizio</span>
+                    <span className={styles.dateLabel}>Inizio</span>
                     <input
                       name="date-start"
                       id="date-start"
@@ -384,7 +378,7 @@ export default function WorksPanel() {
                   </label>
 
                   <label className={styles.row}>
-                    <span style={{ fontSize: 12, opacity: 0.75 }}>Fine</span>
+                    <span className={styles.dateLabel}>Fine</span>
                     <input
                       name="date-end"
                       id="date-end"
@@ -397,7 +391,7 @@ export default function WorksPanel() {
                 </div>
               </div>
 
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <div className={styles.formActions}>
                 <button
                   type="submit"
                   className={`${styles.btn} ${styles.btnPrimary}`}
@@ -422,92 +416,65 @@ export default function WorksPanel() {
       <div className={styles.searchBox}>
         <strong>Ricerca</strong>
 
-        <div className={styles.searchRow}>
-          <input
-            className={styles.input}
-            placeholder="Cerca per avviso, ODA, ODC, PDL, ditta, area, impianto, item…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+        {/* Se già hai WorkSearchBox pronto, usa questo */}
+        <WorkSearchBox value={query} onChange={setQuery} />
+
+        <div className={styles.resultsText}>
+          Risultati: {finalWorks.length} / {works.length}
+        </div>
+
+        {/* ✅ STATUS FILTER BAR (sotto la search) */}
+        <div className={styles.statusBar}>
+          <button
+            type="button"
+            className={`${styles.statusTab} ${statusFilter === "ALL" ? styles.statusTabActive : ""}`}
+            onClick={() => setStatusFilter("ALL")}
+            disabled={hasQuery}
+          >
+            Tutti
+          </button>
 
           <button
             type="button"
-            className={`${styles.btn} ${styles.btnGhost}`}
-            onClick={() => setQuery("")}
-            disabled={!query}
+            className={`${styles.statusTab} ${statusFilter === WorkStatus.OPEN ? styles.statusTabActive : ""}`}
+            onClick={() => setStatusFilter(WorkStatus.OPEN)}
+            disabled={hasQuery}
           >
-            Pulisci
+            Aperto
+          </button>
+
+          <button
+            type="button"
+            className={`${styles.statusTab} ${statusFilter === WorkStatus.SUSPENDED ? styles.statusTabActive : ""}`}
+            onClick={() => setStatusFilter(WorkStatus.SUSPENDED)}
+            disabled={hasQuery}
+          >
+            Sospeso
+          </button>
+
+          <button
+            type="button"
+            className={`${styles.statusTab} ${statusFilter === WorkStatus.PROGRAMMED ? styles.statusTabActive : ""}`}
+            onClick={() => setStatusFilter(WorkStatus.PROGRAMMED)}
+            disabled={hasQuery}
+          >
+            In Program
+          </button>
+
+          <button
+            type="button"
+            className={`${styles.statusTab} ${statusFilter === WorkStatus.CLOSED ? styles.statusTabActive : ""}`}
+            onClick={() => setStatusFilter(WorkStatus.CLOSED)}
+            disabled={hasQuery}
+          >
+            Evaso
           </button>
         </div>
-
-        <div style={{ fontSize: 12, opacity: 0.7 }}>
-          Risultati: {finalWorks.length} / {works.length}
-        </div>
-         {/* ✅ STATUS FILTER BAR (sotto la search) */}
-      <div className={styles.statusBar}>
-        <button
-          type="button"
-          className={`${styles.statusTab} ${statusFilter === "ALL" ? styles.statusTabActive : ""
-            }`}
-          onClick={() => setStatusFilter("ALL")}
-          disabled={hasQuery}
-        >
-          Tutti
-        </button>
-
-        <button
-          type="button"
-          className={`${styles.statusTab} ${statusFilter === WorkStatus.OPEN ? styles.statusTabActive : ""
-            }`}
-          onClick={() => setStatusFilter(WorkStatus.OPEN)}
-          disabled={hasQuery}
-        >
-          Aperto
-        </button>
-
-        <button
-          type="button"
-          className={`${styles.statusTab} ${statusFilter === WorkStatus.SUSPENDED ? styles.statusTabActive : ""
-            }`}
-          onClick={() => setStatusFilter(WorkStatus.SUSPENDED)}
-          disabled={hasQuery}
-        >
-          Sospeso
-        </button>
- <button
-  type="button"
-  className={`${styles.statusTab} ${
-    statusFilter === WorkStatus.PROGRAMMED ? styles.statusTabActive : ""
-  }`}
-  onClick={() => setStatusFilter(WorkStatus.PROGRAMMED)}
-  disabled={hasQuery}
->
- In Program
-</button>
-
-        <button
-          type="button"
-          className={`${styles.statusTab} ${statusFilter === WorkStatus.CLOSED ? styles.statusTabActive : ""
-            }`}
-          onClick={() => setStatusFilter(WorkStatus.CLOSED)}
-          disabled={hasQuery}
-        >
-          Evaso
-        </button>
-      </div>
       </div>
 
       {/* LISTA */}
-      <div style={{ display: "grid", gap: 10 }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 10,
-            flexWrap: "wrap",
-          }}
-        >
+      <div className={styles.list}>
+        <div className={styles.listHeader}>
           <strong>Lista lavori</strong>
 
           <button

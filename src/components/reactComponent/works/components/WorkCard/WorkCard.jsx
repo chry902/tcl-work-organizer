@@ -166,7 +166,7 @@ console.log(WorkStatus);
       {/* DESCRIZIONE (sempre visibile) */}
       <div className={styles.textBlock}>
         <div className={styles.textSection}>
-          <div className={styles.textLabel}>Descr:</div>
+          {/* <div className={styles.textLabel}>Descr:</div> */}
           <div className={styles.textValue}>{w.description || "-"}</div>
         </div>
 
