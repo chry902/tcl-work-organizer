@@ -139,7 +139,7 @@ export default function WorkCard({
       {/* DESCRIZIONE (sempre visibile) */}
       <div className={styles.textBlock}>
         <div className={styles.textSection}>
-          <div className={styles.textLabel}>Descrizione</div>
+          <div className={styles.textLabel}>Descr:</div>
           <div className={styles.textValue}>{w.description || "-"}</div>
         </div>
 
@@ -147,7 +147,7 @@ export default function WorkCard({
         {expanded && (
           <div className={styles.textSection}>
             <div className={styles.textLabelRow}>
-              <div className={styles.textLabel}>Note</div>
+              <div className={styles.textLabel}>Note:</div>
 
               {editingNotesId === w.id ? (
                 <div className={styles.noteActions}>
