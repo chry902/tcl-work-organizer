@@ -1,3 +1,54 @@
+.btn {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  transition:
+    background 120ms ease,
+    box-shadow 120ms ease,
+    transform 80ms ease;
+}
+
+.btnGhost {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.btnDanger {
+  background: #fee2e2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.btnDanger:hover {
+  background: #fecaca;
+}
+
+
+.btn:hover {
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+/* ✅ STATO DISABILITATO (QUESTO MANCAVA) */
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+
 .panel {
   display: grid;
   gap: 16px;
@@ -130,4 +181,33 @@
 .cards {
   display: grid;
   gap: 12px;
+}
+
+
+.statusBar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.statusTab {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.statusTabActive {
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  border-color: rgba(0, 0, 0, 0.4);
+}
+
+.statusTab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

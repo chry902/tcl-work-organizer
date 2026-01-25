@@ -50,7 +50,7 @@ export async function PUT({ params, request, locals }) {
 
 /**
  * PATCH: cambia solo lo status
- * Body: { status: "aperto" | "sospeso" | "evaso" }
+ * Body: { status: "aperto" | "sospeso" | "programmato" | "evaso" }
  */
 export async function PATCH({ params, request, locals }) {
   const userId = requireAuth(locals);
@@ -66,7 +66,7 @@ export async function PATCH({ params, request, locals }) {
       const allowed = new Set(Object.values(WorkStatus));
       if (!allowed.has(status)) {
         return json(
-          { ok: false, error: "Status non valido. Usa: aperto | sospeso | evaso" },
+          { ok: false, error: "Status non valido. Usa: aperto | sospeso | programmato | evaso" },
           400
         );
       }

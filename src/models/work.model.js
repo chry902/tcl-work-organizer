@@ -3,6 +3,7 @@
 export const WorkStatus = {
   OPEN: "aperto",
   SUSPENDED: "sospeso",
+  PROGRAMMED: "programmato",
   CLOSED: "evaso",
 };
 

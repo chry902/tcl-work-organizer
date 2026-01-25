@@ -1,6 +1,5 @@
 import WorkCard from "./components/WorkCard/WorkCard";
 
-
 import React, { useEffect, useMemo, useState } from "react";
 import { patchWorkNotes } from "@/services/works.services.js";
 import { WorkStatus } from "@/models/work.model.js";
@@ -21,20 +20,6 @@ const emptyForm = {
   dates: { start: "", end: "" },
 };
 
-const cardClassByStatus = (status, styles) => {
-  switch (status) {
-    case WorkStatus.OPEN:
-      return styles.cardOpen;
-    case WorkStatus.SUSPENDED:
-      return styles.cardSuspended;
-    case WorkStatus.CLOSED:
-      return styles.cardClosed;
-    default:
-      return "";
-  }
-};
-
-
 function pillText(status) {
   if (status === WorkStatus.OPEN) return "APERTO";
   if (status === WorkStatus.SUSPENDED) return "SOSPESO";
@@ -44,8 +29,11 @@ function pillText(status) {
 const STATUS_ORDER = {
   [WorkStatus.OPEN]: 0,
   [WorkStatus.SUSPENDED]: 1,
-  [WorkStatus.CLOSED]: 2, // EVASO
+  [WorkStatus.PROGRAMMED]: 2,
+  [WorkStatus.CLOSED]: 3,
 };
+
+
 
 function statusRank(status) {
   return STATUS_ORDER[status] ?? 99;
@@ -82,11 +70,9 @@ function formatDateIT(iso) {
   return `${d}/${m}/${y}`;
 }
 
-
 export default function WorksPanel() {
   const [expandedMap, setExpandedMap] = useState({});
-
-
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   const [works, setWorks] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -102,17 +88,20 @@ export default function WorksPanel() {
     }));
   };
 
-
   // Search
   const [query, setQuery] = useState("");
+  useEffect(() => {
+  if (query.trim().length > 0) {
+    setStatusFilter("ALL");
+  }
+}, [query]);
+
 
   // Form collapsible
   const [isFormOpen, setIsFormOpen] = useState(false); // di default CHIUSO
 
-
   const [editingNotesId, setEditingNotesId] = useState(null);
   const [notesDraft, setNotesDraft] = useState("");
-
 
   async function refresh() {
     setLoading(true);
@@ -155,7 +144,7 @@ export default function WorksPanel() {
       setWorks((prev) => [created, ...prev]);
       setForm(emptyForm);
       setMsg("✅ Lavoro creato");
-      setIsFormOpen(false); // richiudiamo per lasciarti spazio
+      setIsFormOpen(false);
     } catch (e) {
       setMsg(e?.message || "Errore creazione lavoro");
     }
@@ -219,7 +208,6 @@ export default function WorksPanel() {
     }
   }
 
-
   const filteredWorks = useMemo(() => {
     return works
       .filter((w) => workMatchesQuery(w, query))
@@ -235,6 +223,16 @@ export default function WorksPanel() {
       });
   }, [works, query]);
 
+  const hasQuery = query.trim().length > 0;
+
+  // ✅ SE stai cercando → ignora filtro stato
+  // ✅ SE NON stai cercando → applica filtro stato
+
+  const finalWorks = hasQuery
+    ? filteredWorks
+    : statusFilter === "ALL"
+      ? filteredWorks
+      : filteredWorks.filter((w) => w.status === statusFilter);
 
   return (
     <div className={styles.panel}>
@@ -443,8 +441,60 @@ export default function WorksPanel() {
         </div>
 
         <div style={{ fontSize: 12, opacity: 0.7 }}>
-          Risultati: {filteredWorks.length} / {works.length}
+          Risultati: {finalWorks.length} / {works.length}
         </div>
+         {/* ✅ STATUS FILTER BAR (sotto la search) */}
+      <div className={styles.statusBar}>
+        <button
+          type="button"
+          className={`${styles.statusTab} ${statusFilter === "ALL" ? styles.statusTabActive : ""
+            }`}
+          onClick={() => setStatusFilter("ALL")}
+          disabled={hasQuery}
+        >
+          Tutti
+        </button>
+
+        <button
+          type="button"
+          className={`${styles.statusTab} ${statusFilter === WorkStatus.OPEN ? styles.statusTabActive : ""
+            }`}
+          onClick={() => setStatusFilter(WorkStatus.OPEN)}
+          disabled={hasQuery}
+        >
+          Aperto
+        </button>
+
+        <button
+          type="button"
+          className={`${styles.statusTab} ${statusFilter === WorkStatus.SUSPENDED ? styles.statusTabActive : ""
+            }`}
+          onClick={() => setStatusFilter(WorkStatus.SUSPENDED)}
+          disabled={hasQuery}
+        >
+          Sospeso
+        </button>
+ <button
+  type="button"
+  className={`${styles.statusTab} ${
+    statusFilter === WorkStatus.PROGRAMMED ? styles.statusTabActive : ""
+  }`}
+  onClick={() => setStatusFilter(WorkStatus.PROGRAMMED)}
+  disabled={hasQuery}
+>
+ In Program
+</button>
+
+        <button
+          type="button"
+          className={`${styles.statusTab} ${statusFilter === WorkStatus.CLOSED ? styles.statusTabActive : ""
+            }`}
+          onClick={() => setStatusFilter(WorkStatus.CLOSED)}
+          disabled={hasQuery}
+        >
+          Evaso
+        </button>
+      </div>
       </div>
 
       {/* LISTA */}
@@ -472,20 +522,18 @@ export default function WorksPanel() {
 
         {loading ? (
           <p>Caricamento...</p>
-        ) : filteredWorks.length === 0 ? (
+        ) : finalWorks.length === 0 ? (
           <p>Nessun lavoro trovato.</p>
         ) : (
           <div className={styles.cards}>
-            {filteredWorks.map((w) => (
+            {finalWorks.map((w) => (
               <WorkCard
                 key={w.id}
                 w={w}
                 expanded={!!expandedMap[w.id]}
                 onToggle={() => toggleExpanded(w.id)}
-                
                 WorkStatus={WorkStatus}
                 busyId={busyId}
-                cardClassByStatus={cardClassByStatus}
                 formatDateIT={formatDateIT}
                 pillText={pillText}
                 onDelete={onDelete}
@@ -496,10 +544,14 @@ export default function WorksPanel() {
                 startEditNotes={startEditNotes}
                 cancelEditNotes={cancelEditNotes}
                 saveNotes={saveNotes}
+                cardClassByStatus={(status) => {
+                  if (status === WorkStatus.OPEN) return styles.cardOpen;
+                  if (status === WorkStatus.SUSPENDED) return styles.cardSuspended;
+                  if (status === WorkStatus.CLOSED) return styles.cardClosed;
+                  return "";
+                }}
               />
             ))}
-
-
           </div>
         )}
       </div>

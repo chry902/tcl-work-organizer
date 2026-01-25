@@ -1,14 +1,29 @@
 /* ---------- Buttons ---------- */
 .btn {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 12px;
-  padding: 3px 12px;
-  background: rgba(255, 255, 255, 0.70);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.85);
   cursor: pointer;
   font-weight: 700;
-  font-size: 14px;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, opacity 120ms ease;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  transition:
+    background 120ms ease,
+    box-shadow 120ms ease,
+    transform 80ms ease;
 }
+.btn:hover {
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
 
 .btn:hover {
   transform: translateY(-1px);
@@ -264,6 +279,21 @@
   border-radius: 12px;
   border: 1px solid rgba(0,0,0,0.08);
   background: rgba(255,255,255,0.55);
+}
+
+
+/* =========================
+   Bottoni compatti SOLO nella card
+   ========================= */
+.card .btn {
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.card .btnGhost {
+  padding: 2px 6px;
+  font-size: 11px;
 }
 
 /* ---------- Mobile ---------- */

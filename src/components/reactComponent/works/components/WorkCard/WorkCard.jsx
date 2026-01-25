@@ -27,7 +27,7 @@ export default function WorkCard({
   saveNotes,
 }) {
   if (!w) return null;
-
+console.log(WorkStatus);
   return (
     <div className={`${styles.card} ${cardClassByStatus(w.status, styles)}`}>
 
