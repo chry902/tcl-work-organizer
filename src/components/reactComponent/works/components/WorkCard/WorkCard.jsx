@@ -29,7 +29,8 @@ export default function WorkCard({
   if (!w) return null;
 
   return (
-    <div className={`${styles.card} ${cardClassByStatus(w.status)}`}>
+    <div className={`${styles.card} ${cardClassByStatus(w.status, styles)}`}>
+
       {/* TOP (cliccabile per toggle) */}
       <div
         className={styles.cardTop}
@@ -61,7 +62,20 @@ export default function WorkCard({
                 </span>
               </div>
 
-              <span className={styles.pill}>{pillText(w.status)}</span>
+             <span
+  className={`${styles.pill} ${
+    w.status === WorkStatus.OPEN
+      ? styles.pillOpen
+      : w.status === WorkStatus.SUSPENDED
+      ? styles.pillSuspended
+      : w.status === WorkStatus.CLOSED
+      ? styles.pillClosed
+      : ""
+  }`}
+>
+  {pillText(w.status)}
+</span>
+
             </div>
           </div>
         ) : (
@@ -84,7 +98,20 @@ export default function WorkCard({
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span className={styles.pill}>{pillText(w.status)}</span>
+               <span
+  className={`${styles.pill} ${
+    w.status === WorkStatus.OPEN
+      ? styles.pillOpen
+      : w.status === WorkStatus.SUSPENDED
+      ? styles.pillSuspended
+      : w.status === WorkStatus.CLOSED
+      ? styles.pillClosed
+      : ""
+  }`}
+>
+  {pillText(w.status)}
+</span>
+
 
                 <button
                   type="button"

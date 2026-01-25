@@ -21,11 +21,19 @@ const emptyForm = {
   dates: { start: "", end: "" },
 };
 
-function cardClassByStatus(status) {
-  if (status === WorkStatus.OPEN) return styles.cardOpen;
-  if (status === WorkStatus.SUSPENDED) return styles.cardSuspended;
-  return styles.cardClosed; // evaso
-}
+const cardClassByStatus = (status, styles) => {
+  switch (status) {
+    case WorkStatus.OPEN:
+      return styles.cardOpen;
+    case WorkStatus.SUSPENDED:
+      return styles.cardSuspended;
+    case WorkStatus.CLOSED:
+      return styles.cardClosed;
+    default:
+      return "";
+  }
+};
+
 
 function pillText(status) {
   if (status === WorkStatus.OPEN) return "APERTO";
