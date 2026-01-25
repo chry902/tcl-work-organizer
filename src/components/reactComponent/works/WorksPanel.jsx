@@ -1,3 +1,6 @@
+import WorkCard from "./components/WorkCard/WorkCard";
+
+
 import React, { useEffect, useMemo, useState } from "react";
 import { patchWorkNotes } from "@/services/works.services.js";
 import { WorkStatus } from "@/models/work.model.js";
@@ -73,11 +76,24 @@ function formatDateIT(iso) {
 
 
 export default function WorksPanel() {
+  const [expandedMap, setExpandedMap] = useState({});
+
+
+
   const [works, setWorks] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
   const [msg, setMsg] = useState("");
+
+  // Toggle expanded state for a work item
+  const toggleExpanded = (id) => {
+    setExpandedMap((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
 
   // Search
   const [query, setQuery] = useState("");
@@ -246,7 +262,7 @@ export default function WorksPanel() {
                 <strong>Codici</strong>
                 <div className={styles.grid4}>
                   <input
-                  name="avviso"
+                    name="avviso"
                     id="avviso"
                     className={styles.input}
                     placeholder="Avviso"
@@ -453,161 +469,28 @@ export default function WorksPanel() {
         ) : (
           <div className={styles.cards}>
             {filteredWorks.map((w) => (
-              <div
+              <WorkCard
                 key={w.id}
-                className={`${styles.card} ${cardClassByStatus(w.status)}`}
-              >
-                {/* TOP */}
-                <div className={styles.cardTop}>
-                  <div className={styles.topRight}>
-                    <div className={styles.dates}>
-                      <span className={styles.dateItem}>
-                        <span className={styles.dateLabel}>Inizio</span>{" "}
-                        <strong>{w?.dates?.start ? formatDateIT(w.dates.start) : "-"}</strong>
-                      </span>
-                      <span className={styles.dateItem}>
-                        <span className={styles.dateLabel}>Fine</span>{" "}
-                        <strong>{w?.dates?.end ? formatDateIT(w.dates.end) : "-"}</strong>
-                      </span>
-                    </div>
-
-                    <span className={styles.pill}>{pillText(w.status)}</span>
-                  </div>
-
-
-                  <div className={styles.topLeft}>
-                    <div className={styles.chipsRow}>
-                      <span className={styles.chip}>
-                        Avviso: <strong>{w.codes?.avviso || "-"}</strong>
-                      </span>
-                      <span className={styles.chip}>
-                        ODA: <strong>{w.codes?.oda || "-"}</strong>
-                      </span>
-                      <span className={styles.chip}>
-                        ODC: <strong>{w.codes?.odc || "-"}</strong>
-                      </span>
-                      <span className={styles.chip}>
-                        PDL: <strong>{w.codes?.pdl || "-"}</strong>
-                      </span>
-                    </div>
-
-                    <div className={styles.chipsRow}>
-                      <span className={`${styles.chip} ${styles.chipSoft}`}>
-                        Ditta: <strong>{w.context?.ditta || "-"}</strong>
-                      </span>
-                      <span className={`${styles.chip} ${styles.chipSoft}`}>
-                        Area: <strong>{w.context?.area || "-"}</strong>
-                      </span>
-                      <span className={`${styles.chip} ${styles.chipSoft}`}>
-                        Impianto: <strong>{w.context?.impianto || "-"}</strong>
-                      </span>
-                      <span className={`${styles.chip} ${styles.chipSoft}`}>
-                        Item: <strong>{w.context?.item || "-"}</strong>
-                      </span>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* TEXT */}
-                <div className={styles.textBlock}>
-                  <div className={styles.textSection}>
-                    <div className={styles.textLabel}>Descrizione</div>
-                    <div className={styles.textValue}>{w.description || "-"}</div>
-                  </div>
-
-                  <div className={styles.textSection}>
-
-                    <div className={styles.textLabelRow}>
-                    <div className={styles.textLabel}>Note</div>
-                      {/* -------------- */}
-                      {editingNotesId === w.id ? (
-                        <div className={styles.noteActions}>
-                          <button
-                            type="button"
-                            className={`${styles.btn} ${styles.btnGhost}`}
-                            onClick={() => saveNotes(w)}
-                            disabled={busyId === w.id}
-                          >
-                            Salva
-                          </button>
-
-                          <button
-                            type="button"
-                            className={`${styles.btn} ${styles.btnGhost}`}
-                            onClick={cancelEditNotes}
-                            disabled={busyId === w.id}
-                          >
-                            Annulla
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          className={`${styles.btn} ${styles.btnGhost}`}
-                          onClick={() => startEditNotes(w)}
-                        >
-                          Modifica
-                        </button>
-                      )}
-                    </div>
-                      {editingNotesId === w.id ? (
-                        <textarea
-                          className={styles.textarea}
-                          value={notesDraft}
-                          onChange={(e) => setNotesDraft(e.target.value)}
-                          rows={3}
-                          placeholder="Scrivi note..."
-                          disabled={busyId === w.id}
-                        />
-                      ) : (
-                        <div className={styles.textValue}>{w.notes || "-"}</div>
-                      )}
-
-
-                  </div>
-
-                </div>
-
-                {/* BOTTOM */}
-                <div className={styles.cardBottom}>
-                  
-                    {/* <div className={styles.statusTitle}>Stato</div> */}
-
-                    <div className={styles.checks}>
-                      {Object.values(WorkStatus).map((s) => (
-                        <label key={s} className={styles.check}>
-                          <input
-                            type="checkbox"
-                            checked={w.status === s}
-                            onChange={() => changeStatus(w.id, s)}
-                            disabled={busyId === w.id}
-                          />
-                          <span>{s}</span>
-                        </label>
-                      ))}
-
-
-                    
-                  </div>
-                      <button
-                      type="button"
-                      className={`${styles.btn} ${styles.btnDanger}`}
-                      onClick={() => onDelete(w.id)}
-                      disabled={busyId === w.id}
-                    >
-                      {busyId === w.id ? "..." : "Elimina"}
-                    </button>
-
-                  {/* <div className={styles.bottomRight}>
-                   
-
-                    
-                     
-                  </div> */}
-                </div>
-              </div>
+                w={w}
+                expanded={!!expandedMap[w.id]}
+                onToggle={() => toggleExpanded(w.id)}
+                
+                WorkStatus={WorkStatus}
+                busyId={busyId}
+                cardClassByStatus={cardClassByStatus}
+                formatDateIT={formatDateIT}
+                pillText={pillText}
+                onDelete={onDelete}
+                changeStatus={changeStatus}
+                editingNotesId={editingNotesId}
+                notesDraft={notesDraft}
+                setNotesDraft={setNotesDraft}
+                startEditNotes={startEditNotes}
+                cancelEditNotes={cancelEditNotes}
+                saveNotes={saveNotes}
+              />
             ))}
+
 
           </div>
         )}
