@@ -2,6 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import WorkCard from "./components/WorkCard/WorkCard";
 import WorkSearchBox from "./components/WorkSearchBox/WorkSearchBox";
+import StatusFilterBar from "./components/StatusFilterBar/StatusFilterBar";
+import WorksListHeader from "./components/WorksListHeader/WorksListHeader";
+
+
 
 import { patchWorkNotes } from "@/services/works.services.js";
 import { WorkStatus } from "@/models/work.model.js";
@@ -424,68 +428,22 @@ export default function WorksPanel() {
         </div>
 
         {/* ✅ STATUS FILTER BAR (sotto la search) */}
-        <div className={styles.statusBar}>
-          <button
-            type="button"
-            className={`${styles.statusTab} ${statusFilter === "ALL" ? styles.statusTabActive : ""}`}
-            onClick={() => setStatusFilter("ALL")}
-            disabled={hasQuery}
-          >
-            Tutti
-          </button>
+        <StatusFilterBar
+          value={statusFilter}
+          onChange={setStatusFilter}
+          disabled={hasQuery}
+          WorkStatus={WorkStatus}
+        />
 
-          <button
-            type="button"
-            className={`${styles.statusTab} ${statusFilter === WorkStatus.OPEN ? styles.statusTabActive : ""}`}
-            onClick={() => setStatusFilter(WorkStatus.OPEN)}
-            disabled={hasQuery}
-          >
-            Aperto
-          </button>
-
-          <button
-            type="button"
-            className={`${styles.statusTab} ${statusFilter === WorkStatus.SUSPENDED ? styles.statusTabActive : ""}`}
-            onClick={() => setStatusFilter(WorkStatus.SUSPENDED)}
-            disabled={hasQuery}
-          >
-            Sospeso
-          </button>
-
-          <button
-            type="button"
-            className={`${styles.statusTab} ${statusFilter === WorkStatus.PROGRAMMED ? styles.statusTabActive : ""}`}
-            onClick={() => setStatusFilter(WorkStatus.PROGRAMMED)}
-            disabled={hasQuery}
-          >
-            In Program
-          </button>
-
-          <button
-            type="button"
-            className={`${styles.statusTab} ${statusFilter === WorkStatus.CLOSED ? styles.statusTabActive : ""}`}
-            onClick={() => setStatusFilter(WorkStatus.CLOSED)}
-            disabled={hasQuery}
-          >
-            Evaso
-          </button>
-        </div>
       </div>
 
       {/* LISTA */}
       <div className={styles.list}>
-        <div className={styles.listHeader}>
-          <strong>Lista lavori</strong>
+       <WorksListHeader
+  loading={loading}
+  onRefresh={refresh}
+/>
 
-          <button
-            type="button"
-            className={`${styles.btn} ${styles.btnGhost}`}
-            onClick={refresh}
-            disabled={loading}
-          >
-            {loading ? "Carico..." : "Ricarica"}
-          </button>
-        </div>
 
         {loading ? (
           <p>Caricamento...</p>
