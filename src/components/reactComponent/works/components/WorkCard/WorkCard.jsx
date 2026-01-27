@@ -9,7 +9,6 @@ export default function WorkCard({
   w,
   expanded,
   onToggle,
-
   WorkStatus,
   busyId,
 
@@ -31,9 +30,15 @@ export default function WorkCard({
   saveNotes,
 }) {
   if (!w) return null;
+const statusClass =
+  w.status === WorkStatus.OPEN ? styles.cardOpen :
+  w.status === WorkStatus.SUSPENDED ? styles.cardSuspended :
+  w.status === WorkStatus.PROGRAMMED ? styles.cardProgrammed :
+  w.status === WorkStatus.CLOSED ? styles.cardClosed :
+  "";
 
   return (
-    <div className={`${styles.card} ${cardClassByStatus(w.status, styles)}`}>
+    <div className={`${styles.card} ${statusClass}`}>
       {/* HEADER */}
       <WorkHeader
         w={w}

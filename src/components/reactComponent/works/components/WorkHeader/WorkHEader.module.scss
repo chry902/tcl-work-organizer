@@ -120,15 +120,22 @@
 }
 
 .pillOpen {
-  background: #1f9d55;
+  background: #00ff1a;
+  color: #111;
 }
 
 .pillSuspended {
-  background: #f59e0b;
+  background: #a5a5a5;
+  
+}
+
+.pillProgrammed {
+  background: #ffbe18; /* giallo caldo */
+  color: #111;
 }
 
 .pillClosed {
-  background: #dc2626;
+  background: #ff2828;
 }
 
 /* ---------- Chips ---------- */

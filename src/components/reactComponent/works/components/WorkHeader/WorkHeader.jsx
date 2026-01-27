@@ -14,7 +14,15 @@ export default function WorkHeader({
   formatDateIT,
   pillText,
   onDelete,
-}) {
+}) 
+{
+  const PILL_CLASS = {
+  [WorkStatus.OPEN]: styles.pillOpen,
+  [WorkStatus.SUSPENDED]: styles.pillSuspended,
+  [WorkStatus.PROGRAMMED]: styles.pillProgrammed,
+  [WorkStatus.CLOSED]: styles.pillClosed,
+};
+
   return (
     <div className={styles.cardTop} onClick={onToggle} role="button" tabIndex={0}>
       {!expanded ? (
@@ -38,19 +46,10 @@ export default function WorkHeader({
               </span>
             </div>
 
-            <span
-              className={`${styles.pill} ${
-                w.status === WorkStatus.OPEN
-                  ? styles.pillOpen
-                  : w.status === WorkStatus.SUSPENDED
-                  ? styles.pillSuspended
-                  : w.status === WorkStatus.CLOSED
-                  ? styles.pillClosed
-                  : ""
-              }`}
-            >
-              {pillText(w.status)}
-            </span>
+<span className={`${styles.pill} ${PILL_CLASS[w.status] || ""}`}>
+  {pillText(w.status)}
+</span>
+
           </div>
         </div>
       ) : (
@@ -69,19 +68,10 @@ export default function WorkHeader({
             </div>
 
             <div className={styles.rightActions}>
-              <span
-                className={`${styles.pill} ${
-                  w.status === WorkStatus.OPEN
-                    ? styles.pillOpen
-                    : w.status === WorkStatus.SUSPENDED
-                    ? styles.pillSuspended
-                    : w.status === WorkStatus.CLOSED
-                    ? styles.pillClosed
-                    : ""
-                }`}
-              >
-                {pillText(w.status)}
-              </span>
+             <span className={`${styles.pill} ${PILL_CLASS[w.status] || ""}`}>
+  {pillText(w.status)}
+</span>
+
 
               <button
                 type="button"
@@ -100,7 +90,7 @@ export default function WorkHeader({
 
           <div className={styles.topLeft}>
             <WorkCodes codes={w.codes} />
-<WorkMeta context={w.context} />
+            <WorkMeta context={w.context} />
 
           </div>
         </>

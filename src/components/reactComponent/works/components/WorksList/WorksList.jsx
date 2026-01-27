@@ -37,8 +37,6 @@ export default function WorksList({
   startEditNotes,
   cancelEditNotes,
   saveNotes,
-
-  cardClassByStatus,
 }) {
   if (loading) return <p>Caricamento...</p>;
   if (!works || works.length === 0) return <p>Nessun lavoro trovato.</p>;
@@ -63,7 +61,6 @@ export default function WorksList({
           startEditNotes={startEditNotes}
           cancelEditNotes={cancelEditNotes}
           saveNotes={saveNotes}
-          cardClassByStatus={cardClassByStatus}
         />
       ))}
     </div>

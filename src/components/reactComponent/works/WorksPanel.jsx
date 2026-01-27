@@ -1,12 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-
 import WorkSearchBox from "./components/WorkSearchBox/WorkSearchBox";
 import StatusFilterBar from "./components/StatusFilterBar/StatusFilterBar";
 import WorksListHeader from "./components/WorksListHeader/WorksListHeader";
 import WorksList from "./components/WorksList/WorksList";
-
-
 
 import { patchWorkNotes } from "@/services/works.services.js";
 import { WorkStatus } from "@/models/work.model.js";
@@ -30,7 +27,9 @@ const emptyForm = {
 function pillText(status) {
   if (status === WorkStatus.OPEN) return "APERTO";
   if (status === WorkStatus.SUSPENDED) return "SOSPESO";
-  return "EVASO";
+  if (status === WorkStatus.PROGRAMMED) return "PROGRAM.";
+  if (status === WorkStatus.CLOSED) return "EVASO";
+  return "STATO";
 }
 
 const STATUS_ORDER = {
@@ -82,10 +81,13 @@ export default function WorksPanel() {
   const [works, setWorks] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
-  const [busyId, setBusyId] = useState(null);
+
+  // ✅ separiamo i busy: uno per status/notes, uno per delete
+  const [busyStatusId, setBusyStatusId] = useState(null);
+  const [busyDeleteId, setBusyDeleteId] = useState(null);
+
   const [msg, setMsg] = useState("");
 
-  // Toggle expanded state for a work item
   const toggleExpanded = (id) => {
     setExpandedMap((prev) => ({
       ...prev,
@@ -102,7 +104,7 @@ export default function WorksPanel() {
   }, [query]);
 
   // Form collapsible
-  const [isFormOpen, setIsFormOpen] = useState(false); // di default CHIUSO
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const [editingNotesId, setEditingNotesId] = useState(null);
   const [notesDraft, setNotesDraft] = useState("");
@@ -156,7 +158,7 @@ export default function WorksPanel() {
 
   async function changeStatus(id, status) {
     setMsg("");
-    setBusyId(id);
+    setBusyStatusId(id);
 
     try {
       const updated = await patchWorkStatus(id, status);
@@ -165,13 +167,13 @@ export default function WorksPanel() {
     } catch (e) {
       setMsg(e?.message || "Errore cambio stato");
     } finally {
-      setBusyId(null);
+      setBusyStatusId(null);
     }
   }
 
   async function onDelete(id) {
     setMsg("");
-    setBusyId(id);
+    setBusyDeleteId(id);
 
     try {
       await deleteWork(id);
@@ -180,7 +182,7 @@ export default function WorksPanel() {
     } catch (e) {
       setMsg(e?.message || "Errore eliminazione");
     } finally {
-      setBusyId(null);
+      setBusyDeleteId(null);
     }
   }
 
@@ -196,7 +198,7 @@ export default function WorksPanel() {
 
   async function saveNotes(work) {
     setMsg("");
-    setBusyId(work.id);
+    setBusyStatusId(work.id);
 
     try {
       const updated = await patchWorkNotes(work.id, notesDraft);
@@ -208,7 +210,7 @@ export default function WorksPanel() {
     } catch (e) {
       setMsg(e?.message || "Errore aggiornamento note");
     } finally {
-      setBusyId(null);
+      setBusyStatusId(null);
     }
   }
 
@@ -216,11 +218,9 @@ export default function WorksPanel() {
     return works
       .filter((w) => workMatchesQuery(w, query))
       .sort((a, b) => {
-        // 1) stato: aperto -> sospeso -> programmed -> evaso
         const s = statusRank(a.status) - statusRank(b.status);
         if (s !== 0) return s;
 
-        // 2) a parità di stato: più recenti sopra (updatedAt)
         const ta = a?.updatedAt ? new Date(a.updatedAt).getTime() : 0;
         const tb = b?.updatedAt ? new Date(b.updatedAt).getTime() : 0;
         return tb - ta;
@@ -232,8 +232,8 @@ export default function WorksPanel() {
   const finalWorks = hasQuery
     ? filteredWorks
     : statusFilter === "ALL"
-      ? filteredWorks
-      : filteredWorks.filter((w) => w.status === statusFilter);
+    ? filteredWorks
+    : filteredWorks.filter((w) => w.status === statusFilter);
 
   return (
     <div className={styles.panel}>
@@ -328,7 +328,9 @@ export default function WorksPanel() {
                     className={styles.input}
                     placeholder="Impianto"
                     value={form.context.impianto}
-                    onChange={(e) => setNested("context.impianto", e.target.value)}
+                    onChange={(e) =>
+                      setNested("context.impianto", e.target.value)
+                    }
                   />
                   <input
                     name="item"
@@ -421,30 +423,23 @@ export default function WorksPanel() {
       <div className={styles.searchBox}>
         <strong>Ricerca</strong>
 
-        {/* Se già hai WorkSearchBox pronto, usa questo */}
         <WorkSearchBox value={query} onChange={setQuery} />
 
         <div className={styles.resultsText}>
           Risultati: {finalWorks.length} / {works.length}
         </div>
 
-        {/* ✅ STATUS FILTER BAR (sotto la search) */}
         <StatusFilterBar
           value={statusFilter}
           onChange={setStatusFilter}
           disabled={hasQuery}
           WorkStatus={WorkStatus}
         />
-
       </div>
 
       {/* LISTA */}
       <div className={styles.list}>
-        <WorksListHeader
-          loading={loading}
-          onRefresh={refresh}
-        />
-
+        <WorksListHeader loading={loading} onRefresh={refresh} />
 
         <WorksList
           loading={loading}
@@ -452,7 +447,8 @@ export default function WorksPanel() {
           expandedMap={expandedMap}
           onToggle={toggleExpanded}
           WorkStatus={WorkStatus}
-          busyId={busyId}
+          busyStatusId={busyStatusId}
+          busyDeleteId={busyDeleteId}
           formatDateIT={formatDateIT}
           pillText={pillText}
           onDelete={onDelete}
@@ -463,14 +459,7 @@ export default function WorksPanel() {
           startEditNotes={startEditNotes}
           cancelEditNotes={cancelEditNotes}
           saveNotes={saveNotes}
-          cardClassByStatus={(status) => {
-            if (status === WorkStatus.OPEN) return styles.cardOpen;
-            if (status === WorkStatus.SUSPENDED) return styles.cardSuspended;
-            if (status === WorkStatus.CLOSED) return styles.cardClosed;
-            return "";
-          }}
         />
-
       </div>
     </div>
   );
