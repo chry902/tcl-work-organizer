@@ -1,0 +1,28 @@
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.70);
+  white-space: nowrap;
+}
+
+.chip strong {
+  font-weight: 900;
+}
+
+.chipSoft {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.45);
+}

@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import WorkCard from "./components/WorkCard/WorkCard";
+
 import WorkSearchBox from "./components/WorkSearchBox/WorkSearchBox";
 import StatusFilterBar from "./components/StatusFilterBar/StatusFilterBar";
 import WorksListHeader from "./components/WorksListHeader/WorksListHeader";
+import WorksList from "./components/WorksList/WorksList";
 
 
 
@@ -439,46 +440,37 @@ export default function WorksPanel() {
 
       {/* LISTA */}
       <div className={styles.list}>
-       <WorksListHeader
-  loading={loading}
-  onRefresh={refresh}
-/>
+        <WorksListHeader
+          loading={loading}
+          onRefresh={refresh}
+        />
 
 
-        {loading ? (
-          <p>Caricamento...</p>
-        ) : finalWorks.length === 0 ? (
-          <p>Nessun lavoro trovato.</p>
-        ) : (
-          <div className={styles.cards}>
-            {finalWorks.map((w) => (
-              <WorkCard
-                key={w.id}
-                w={w}
-                expanded={!!expandedMap[w.id]}
-                onToggle={() => toggleExpanded(w.id)}
-                WorkStatus={WorkStatus}
-                busyId={busyId}
-                formatDateIT={formatDateIT}
-                pillText={pillText}
-                onDelete={onDelete}
-                changeStatus={changeStatus}
-                editingNotesId={editingNotesId}
-                notesDraft={notesDraft}
-                setNotesDraft={setNotesDraft}
-                startEditNotes={startEditNotes}
-                cancelEditNotes={cancelEditNotes}
-                saveNotes={saveNotes}
-                cardClassByStatus={(status) => {
-                  if (status === WorkStatus.OPEN) return styles.cardOpen;
-                  if (status === WorkStatus.SUSPENDED) return styles.cardSuspended;
-                  if (status === WorkStatus.CLOSED) return styles.cardClosed;
-                  return "";
-                }}
-              />
-            ))}
-          </div>
-        )}
+        <WorksList
+          loading={loading}
+          works={finalWorks}
+          expandedMap={expandedMap}
+          onToggle={toggleExpanded}
+          WorkStatus={WorkStatus}
+          busyId={busyId}
+          formatDateIT={formatDateIT}
+          pillText={pillText}
+          onDelete={onDelete}
+          changeStatus={changeStatus}
+          editingNotesId={editingNotesId}
+          notesDraft={notesDraft}
+          setNotesDraft={setNotesDraft}
+          startEditNotes={startEditNotes}
+          cancelEditNotes={cancelEditNotes}
+          saveNotes={saveNotes}
+          cardClassByStatus={(status) => {
+            if (status === WorkStatus.OPEN) return styles.cardOpen;
+            if (status === WorkStatus.SUSPENDED) return styles.cardSuspended;
+            if (status === WorkStatus.CLOSED) return styles.cardClosed;
+            return "";
+          }}
+        />
+
       </div>
     </div>
   );
