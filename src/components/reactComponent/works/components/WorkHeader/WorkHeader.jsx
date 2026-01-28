@@ -29,16 +29,14 @@ export default function WorkHeader({
         <div className={styles.compactTop}>
           <div className={styles.compactLeft}>
             <span className={styles.compactAvviso}>
-              Avv: <strong>{w?.codes?.avviso || "-"}</strong>
+              Avv:<strong>{w?.codes?.avviso || "-"}</strong>
             </span>
             <div className={styles.dates}>
-              <span>
-                <span className={styles.dateLabel}>Ini:</span>{" "}
+              <span className={styles.dateLabel}>Ini:
                 <strong>{w?.dates?.start ? formatDateIT(w.dates.start) : "-"}</strong>
               </span>
-              <span>
-                <span className={styles.dateLabel}>Fin:</span>{" "}
-                <strong>{w?.dates?.end ? formatDateIT(w.dates.end) : "-"}</strong>
+              <span className={styles.dateLabel}>
+              Fin:<strong>{w?.dates?.end ? formatDateIT(w.dates.end) : "-"}</strong>
               </span>
             </div>
           </div>

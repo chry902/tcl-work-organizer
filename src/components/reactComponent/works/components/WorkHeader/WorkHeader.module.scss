@@ -51,7 +51,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  flex-wrap: wrap;
+  
 }
 
 .compactLeft {
@@ -71,7 +71,7 @@
 .compactAvviso {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+ 
   font-size: 13px;
 }
 
@@ -97,10 +97,12 @@
 /* ---------- Dates & status ---------- */
 .dates {
   display: flex;
-  gap: 0 1rem;
+  
+  align-items: flex-end;
+  gap: 0 0.3rem;
   text-align: right;
   font-size: 12px;
-  opacity: 0.85;
+  
 }
 
 .dateLabel {

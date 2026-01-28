@@ -26,8 +26,8 @@ const emptyForm = {
 
 function pillText(status) {
   if (status === WorkStatus.OPEN) return "APERTO";
-  if (status === WorkStatus.SUSPENDED) return "SOSPESO";
-  if (status === WorkStatus.PROGRAMMED) return "PROGRAM.";
+  if (status === WorkStatus.SUSPENDED) return "SOSP.";
+  if (status === WorkStatus.PROGRAMMED) return "PROG.";
   if (status === WorkStatus.CLOSED) return "EVASO";
   return "STATO";
 }
