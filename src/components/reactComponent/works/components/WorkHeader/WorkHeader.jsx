@@ -14,14 +14,13 @@ export default function WorkHeader({
   formatDateIT,
   pillText,
   onDelete,
-}) 
-{
+}) {
   const PILL_CLASS = {
-  [WorkStatus.OPEN]: styles.pillOpen,
-  [WorkStatus.SUSPENDED]: styles.pillSuspended,
-  [WorkStatus.PROGRAMMED]: styles.pillProgrammed,
-  [WorkStatus.CLOSED]: styles.pillClosed,
-};
+    [WorkStatus.OPEN]: styles.pillOpen,
+    [WorkStatus.SUSPENDED]: styles.pillSuspended,
+    [WorkStatus.PROGRAMMED]: styles.pillProgrammed,
+    [WorkStatus.CLOSED]: styles.pillClosed,
+  };
 
   return (
     <div className={styles.cardTop} onClick={onToggle} role="button" tabIndex={0}>
@@ -32,9 +31,6 @@ export default function WorkHeader({
             <span className={styles.compactAvviso}>
               Avv: <strong>{w?.codes?.avviso || "-"}</strong>
             </span>
-          </div>
-
-          <div className={styles.compactRight}>
             <div className={styles.dates}>
               <span>
                 <span className={styles.dateLabel}>Ini:</span>{" "}
@@ -45,11 +41,12 @@ export default function WorkHeader({
                 <strong>{w?.dates?.end ? formatDateIT(w.dates.end) : "-"}</strong>
               </span>
             </div>
+          </div>
 
-<span className={`${styles.pill} ${PILL_CLASS[w.status] || ""}`}>
-  {pillText(w.status)}
-</span>
-
+          <div className={styles.compactRight}>
+            <span className={`${styles.pill} ${PILL_CLASS[w.status] || ""}`}>
+              {pillText(w.status)}
+            </span>
           </div>
         </div>
       ) : (
@@ -68,9 +65,9 @@ export default function WorkHeader({
             </div>
 
             <div className={styles.rightActions}>
-             <span className={`${styles.pill} ${PILL_CLASS[w.status] || ""}`}>
-  {pillText(w.status)}
-</span>
+              <span className={`${styles.pill} ${PILL_CLASS[w.status] || ""}`}>
+                {pillText(w.status)}
+              </span>
 
 
               <button
@@ -97,5 +94,5 @@ export default function WorkHeader({
       )}
     </div>
   );
-  
+
 }
